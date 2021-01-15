@@ -1,28 +1,37 @@
 const CustomError = require("../extensions/custom-error");
 
 module.exports = function transform(arr) {
-    if (!Array.isArray(arr)) throw 'Error';
-    let resArr = [];
-    for (i = 0; i < arr.length; i++) {
-        if (arr[i] == '--double-prev') resArr.push(arr[i - 1]);
-        else if (arr[i] == '--double-next') {
-            resArr.push(arr[i + 1]);
-        } else if (arr[i] == '--discard-prev') {
-            resArr.pop();
-        } else if (arr[i] == '--discard-next') {
-            i += 2;
-        } else resArr.push(arr[i]);
-
-        /*       if (typeof(arr[i]) == 'number') resArr.push(arr[i]);
-                else if (arr[i] == '--double-prev') {
-                    if (typeof(arr[i - 1]) == 'number') resArr.push(arr[i - 1]);
-                } else if (arr[i] == '--double-next') {
-                    if (typeof(arr[i + 1]) == 'number') resArr.push(arr[i + 1]);
-                } else if (arr[i] == '--discard-prev') {
-                    if (typeof(arr[i - 1]) == 'number') resArr.pop();
-                } else if (arr[i] == '--discard-next') {
-                    if (typeof(arr[i + 1]) == 'number') i += 2;
-                }*/
+    if (!Array.isArray(arr)) {
+        throw new Error('Error');
     }
-    return resArr
+    let resArr = [];
+    for (let i = 0; i < arr.length; i++) {
+        switch (arr[i]) {
+            case '--discard-next':
+                i++;
+                break;
+            case '--discard-prev':
+                if (arr[i - 2] !== '--discard-next') {
+                    resArr.pop();
+                }
+                break;
+            case '--double-next':
+                if (arr[i + 1] !== undefined) {
+                    resArr.push(arr[i + 1]);
+                }
+                break;
+            case '--double-prev':
+                if (arr[i - 1] !== undefined && arr[i - 2] !== '--discard-next') {
+                    resArr.push(arr[i - 1]);
+                }
+                break;
+            default:
+                resArr.push(arr[i]);
+                break;
+        }
+
+    }
+
+    return resArr;
+
 };
