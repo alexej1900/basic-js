@@ -1,29 +1,26 @@
 const CustomError = require("../extensions/custom-error");
-
+let val = [];
 const chainMaker = {
-    val: [],
+
     getLength() {
-        return this.val.length;
+        return val.length;
     },
     addLink(value) {
-        this.val.push('( ' + value + ' )');
+        val.push('( ' + value + ' )');
         return this;
     },
     removeLink(position) {
-        if (this.val[position - 1] === undefined || typeof position !== "number") {
-            throw new Error();
-            this.val = '';
-        } else
-            this.val.splice(position - 1, 1);
+        if (typeof(position) !== "number" || Number.isInteger(position) === false || position < 0 || position >= val.length) { val.length = 0; throw new Error() }
+        val.splice(position - 1, 1);
         return this;
     },
     reverseChain() {
-        this.val.reverse();
+        val.reverse();
         return this;
     },
     finishChain() {
-        let a = String(this.val.join('~~'));
-        this.val = '';
+        let a = val.join('~~');
+        val.length = 0;
         return a;
     }
 };
